@@ -1,0 +1,13 @@
+from rest_framework import permissions
+
+class IsAuthorOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow authors of an object to edit or delete it.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Read-only actions (GET, HEAD, OPTIONS) are allowed for any request
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write actions (PUT, PATCH, DELETE) are Only allowed if the logged-in user owns the object
+        return obj.author == request.user
